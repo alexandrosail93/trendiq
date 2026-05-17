@@ -54,7 +54,6 @@ button{cursor:pointer;font-family:var(--mono)}
 .btn-add{background:var(--bull);color:#000;border:none;border-radius:9px;padding:9px 18px;font-family:var(--disp);font-size:9px;font-weight:700;letter-spacing:.08em;transition:opacity .15s,transform .1s;white-space:nowrap}
 .btn-add:hover{opacity:.85}
 .btn-add:active{transform:scale(.95)}
-.btn-add:disabled{opacity:.35;cursor:not-allowed}
 .btn-fav-add{
   background:var(--s3);border:1px solid var(--bd);border-radius:9px;
   padding:9px 13px;font-size:16px;color:#aaa;
@@ -62,7 +61,6 @@ button{cursor:pointer;font-family:var(--mono)}
 }
 .btn-fav-add:hover{background:rgba(255,184,32,.15);border-color:rgba(255,184,32,.5);color:var(--warn);transform:scale(1.08)}
 .btn-fav-add:active{transform:scale(.95)}
-.btn-fav-add:disabled{opacity:.35;cursor:not-allowed}
 
 /* FAV CHIPS */
 .fav-section{max-width:760px;margin:0 auto;padding:0 12px 4px;display:none}
@@ -559,10 +557,8 @@ const RC={g:'var(--bull)',l:'var(--blue)',w:'var(--warn)',b:'var(--bear)'};
 async function addTicker(asFav=false){
   const raw = document.getElementById('addInp').value.trim();
   if(!raw) return;
-  const btn = document.getElementById('btnAdd');
-  const btnF = document.getElementById('btnFavAdd');
-  btn.disabled = true; btnF.disabled = true;
   document.getElementById('addInp').value = '';
+  document.getElementById('addInp').focus();
 
   // resolve: try as-is first, then by name
   let ticker = raw.replace(/\s+/g,'').toUpperCase();
@@ -582,14 +578,14 @@ async function addTicker(asFav=false){
       ticker = resolved;
       document.querySelector(`#${lid} span`).textContent = `Caricamento ${ticker}…`;
       try{ data = await fetchYahoo(ticker); }
-      catch(e2){ document.getElementById(lid)?.remove(); showToast('❌ '+e2.message,3200); btn.disabled=false; btnF.disabled=false; if(!watchlist.length) renderList(); return; }
+      catch(e2){ document.getElementById(lid)?.remove(); showToast('❌ '+e2.message,3200); if(!watchlist.length) renderList(); return; }
     } else {
-      document.getElementById(lid)?.remove(); showToast('❌ Non trovato. Prova il ticker diretto.',3000); btn.disabled=false; btnF.disabled=false; if(!watchlist.length) renderList(); return;
+      document.getElementById(lid)?.remove(); showToast('❌ Non trovato. Prova il ticker diretto.',3000); if(!watchlist.length) renderList(); return;
     }
   }
 
   if(watchlist.find(w=>w.ticker===ticker)){
-    document.getElementById(lid)?.remove(); showToast('⚠ '+ticker+' già in watchlist'); btn.disabled=false; btnF.disabled=false; renderList(); return;
+    document.getElementById(lid)?.remove(); showToast('⚠ '+ticker+' già in watchlist'); renderList(); return;
   }
 
   const sc = computeScore(data.highs,data.lows,data.closes,data.volumes);
@@ -599,7 +595,6 @@ async function addTicker(asFav=false){
   await save();
   renderList();
   showToast(asFav ? '★ '+ticker+' aggiunto ai preferiti' : '✓ '+ticker+' aggiunto');
-  btn.disabled = false; btnF.disabled = false;
 }
 
 // ── RENDER FAV CHIPS ──
