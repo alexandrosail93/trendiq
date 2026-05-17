@@ -102,9 +102,9 @@ button{cursor:pointer;font-family:var(--mono)}
 .ticker-list{max-width:760px;margin:0 auto;padding:0 12px}
 .ticker-row{
   background:var(--s1);border:1px solid var(--bd);border-radius:12px;
-  padding:10px 12px 10px 10px;margin-bottom:6px;
+  padding:9px 12px 9px 10px;margin-bottom:6px;
   display:grid;
-  grid-template-columns:36px 1fr auto;
+  grid-template-columns:48px 1fr auto;
   align-items:center;
   gap:10px;
   cursor:pointer;position:relative;overflow:hidden;
@@ -118,12 +118,16 @@ button{cursor:pointer;font-family:var(--mono)}
 .ticker-row.weak{--rc:var(--warn)}
 .ticker-row.bear{--rc:var(--bear)}
 
-/* mini ring */
-.mini-ring{position:relative;width:36px;height:36px;flex-shrink:0}
-.mini-ring svg{width:36px;height:36px;transform:rotate(-90deg)}
-.mr-bg{fill:none;stroke:var(--s3);stroke-width:3.5}
-.mr-fg{fill:none;stroke-width:3.5;stroke-linecap:round;stroke-dasharray:88;stroke-dashoffset:88;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)}
-.mr-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:10px;font-weight:900;color:#fff}
+/* score badge */
+.score-col{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;flex-shrink:0
+}
+.score-num{
+  font-family:var(--disp);font-size:22px;font-weight:900;line-height:1;
+  transition:color .3s
+}
+.score-sub{font-size:8px;color:var(--mut);letter-spacing:.06em}
 
 /* info column */
 .tr-info{min-width:0}
@@ -647,9 +651,6 @@ function renderList(){
   el.innerHTML = sorted.map(w=>rowHtml(w)).join('');
   requestAnimationFrame(()=>{
     sorted.forEach(w=>{
-      const sc=scores[w.ticker]; if(!sc) return;
-      const ring=document.getElementById('mr_'+w.ticker);
-      if(ring){ ring.style.strokeDashoffset=88*(1-sc.total/100); ring.style.stroke=RC[sc.vc]; }
       document.querySelectorAll(`[data-tkb="${w.ticker}"]`).forEach(f=>{ f.style.width=f.dataset.w+'%'; });
     });
   });
@@ -658,10 +659,7 @@ function rowHtml(w){
   const sc=scores[w.ticker];
   const rowC=sc?VC[sc.vc]:'';
   const stP=sc?sc.st/25*100:0,mtP=sc?sc.mt/35*100:0,ltP=sc?sc.lt/40*100:0;
-
-  // ring offset: dasharray=88 for r=14
-  const ringOff=sc?(88*(1-sc.total/100)):88;
-  const ringCol=sc?RC[sc.vc]:'var(--mut)';
+  const scoreColor=sc?RC[sc.vc]:'var(--mut)';
 
   let line1='', line2='';
   if(sc){
@@ -684,9 +682,9 @@ function rowHtml(w){
   }
 
   return `<div class="ticker-row ${rowC} ${w.fav?'fav':''}" onclick="openDetail('${w.ticker}')">
-  <div class="mini-ring">
-    <svg viewBox="0 0 36 36"><circle class="mr-bg" cx="18" cy="18" r="14"/><circle class="mr-fg" id="mr_${w.ticker}" cx="18" cy="18" r="14" stroke="${ringCol}" stroke-dashoffset="${ringOff}"/></svg>
-    <div class="mr-num">${sc?sc.total:'-'}</div>
+  <div class="score-col">
+    <div class="score-num" style="color:${scoreColor}">${sc?sc.total:'—'}</div>
+    <div class="score-sub">/100</div>
   </div>
   <div class="tr-info">
     <div class="tr-line1">${line1}</div>
