@@ -55,19 +55,30 @@ button{cursor:pointer;font-family:var(--mono)}
 .btn-add:hover{opacity:.85}
 .btn-add:active{transform:scale(.95)}
 .btn-add:disabled{opacity:.35;cursor:not-allowed}
+.btn-fav-add{
+  background:var(--s3);border:1px solid var(--bd);border-radius:9px;
+  padding:9px 13px;font-size:16px;color:#aaa;
+  transition:all .15s;line-height:1;flex-shrink:0
+}
+.btn-fav-add:hover{background:rgba(255,184,32,.15);border-color:rgba(255,184,32,.5);color:var(--warn);transform:scale(1.08)}
+.btn-fav-add:active{transform:scale(.95)}
+.btn-fav-add:disabled{opacity:.35;cursor:not-allowed}
 
 .sec-lbl{font-size:9px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;padding:0 16px;margin-bottom:8px;max-width:620px;margin-left:auto;margin-right:auto}
 
 /* TICKER LIST */
-.ticker-list{max-width:620px;margin:0 auto;padding:0 12px}
+.ticker-list{max-width:760px;margin:0 auto;padding:0 12px}
 .ticker-row{
-  background:var(--s1);border:1px solid var(--bd);border-radius:14px;
-  padding:13px 14px;margin-bottom:8px;
-  display:flex;align-items:center;gap:12px;
+  background:var(--s1);border:1px solid var(--bd);border-radius:12px;
+  padding:10px 12px 10px 10px;margin-bottom:6px;
+  display:grid;
+  grid-template-columns:36px 1fr auto;
+  align-items:center;
+  gap:10px;
   cursor:pointer;position:relative;overflow:hidden;
   transition:border-color .2s,transform .1s,background .15s
 }
-.ticker-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:14px 0 0 14px;background:var(--rc,var(--mut));transition:background .3s}
+.ticker-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:12px 0 0 12px;background:var(--rc,var(--mut));transition:background .3s}
 .ticker-row:hover{border-color:rgba(255,255,255,.08);background:var(--s2);transform:translateX(2px)}
 .ticker-row.fav{--rc:var(--warn)}
 .ticker-row.bull{--rc:var(--bull)}
@@ -76,42 +87,46 @@ button{cursor:pointer;font-family:var(--mono)}
 .ticker-row.bear{--rc:var(--bear)}
 
 /* mini ring */
-.mini-ring{position:relative;width:46px;height:46px;flex-shrink:0}
-.mini-ring svg{width:46px;height:46px;transform:rotate(-90deg)}
-.mr-bg{fill:none;stroke:var(--s3);stroke-width:4}
-.mr-fg{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:113;stroke-dashoffset:113;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)}
-.mr-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:12px;font-weight:900;color:#fff}
+.mini-ring{position:relative;width:36px;height:36px;flex-shrink:0}
+.mini-ring svg{width:36px;height:36px;transform:rotate(-90deg)}
+.mr-bg{fill:none;stroke:var(--s3);stroke-width:3.5}
+.mr-fg{fill:none;stroke-width:3.5;stroke-linecap:round;stroke-dasharray:88;stroke-dashoffset:88;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)}
+.mr-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:10px;font-weight:900;color:#fff}
 
-.tr-info{flex:1;min-width:0}
-.tr-tk{font-family:var(--disp);font-size:14px;font-weight:700;color:#fff;letter-spacing:-.01em}
-.tr-name{font-size:10px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
-.tr-badge{display:inline-block;margin-top:5px;padding:2px 8px;border-radius:20px;font-size:8px;font-weight:500;letter-spacing:.08em;border:1px solid transparent}
-.tr-meta{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
-.tr-price{font-family:var(--disp);font-size:12px;font-weight:700;color:var(--txt)}
-.tr-pill{font-size:9px;padding:1px 7px;border-radius:10px;letter-spacing:.04em;white-space:nowrap}
-.tr-pill.g{background:rgba(0,223,160,.12);color:var(--bull)}
-.tr-pill.b{background:rgba(255,63,90,.12);color:var(--bear)}
-.tr-pill.w{background:rgba(255,184,32,.12);color:var(--warn)}
-.tr-pill.l{background:rgba(56,160,255,.12);color:var(--blue)}
+/* info column */
+.tr-info{min-width:0}
+.tr-line1{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.tr-tk{font-family:var(--disp);font-size:13px;font-weight:700;color:#fff;letter-spacing:-.01em;flex-shrink:0}
+.tr-price{font-family:var(--disp);font-size:12px;font-weight:600;color:var(--txt);flex-shrink:0}
+.tr-badge{display:inline-block;padding:1px 7px;border-radius:20px;font-size:8px;font-weight:500;letter-spacing:.07em;border:1px solid transparent;flex-shrink:0}
+.tr-line2{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tr-name{font-size:9px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
+.tr-pill{font-size:9px;padding:1px 6px;border-radius:8px;letter-spacing:.03em;white-space:nowrap;flex-shrink:0}
+.tr-pill.g{background:rgba(0,223,160,.1);color:var(--bull)}
+.tr-pill.b{background:rgba(255,63,90,.1);color:var(--bear)}
+.tr-pill.w{background:rgba(255,184,32,.1);color:var(--warn)}
+.tr-pill.l{background:rgba(56,160,255,.1);color:var(--blue)}
 .tr-pill.n{background:var(--s3);color:var(--mut)}
+.tr-sep{font-size:9px;color:var(--bd)}
 
-.tr-tf{display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end}
+/* right column: bars + actions */
+.tr-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.tr-tf{display:flex;flex-direction:column;gap:3px}
 .tf-pip{display:flex;gap:3px;align-items:center}
-.pip-lbl{font-size:8px;color:var(--mut);width:11px;text-align:right}
-.pip-bar{height:4px;border-radius:2px;background:var(--s3);width:34px;overflow:hidden}
+.pip-lbl{font-size:8px;color:var(--mut);width:10px;text-align:right}
+.pip-bar{height:3px;border-radius:2px;background:var(--s3);width:36px;overflow:hidden}
 .pip-fill{height:100%;border-radius:2px;width:0%;transition:width 1.1s ease}
-
-.tr-actions{display:flex;flex-direction:column;gap:5px;align-items:center;flex-shrink:0;padding-left:4px}
+.tr-actions{display:flex;flex-direction:column;align-items:center;gap:4px}
 .btn-star{
   background:var(--s2);border:1px solid var(--bd);
-  border-radius:7px;width:28px;height:28px;
+  border-radius:6px;width:26px;height:26px;
   display:flex;align-items:center;justify-content:center;
-  font-size:14px;color:var(--mut);
-  transition:all .15s;line-height:1
+  font-size:13px;color:#888;
+  transition:all .15s;line-height:1;flex-shrink:0
 }
-.btn-star.on{background:rgba(255,184,32,.12);border-color:rgba(255,184,32,.4);color:var(--warn)}
+.btn-star.on{background:rgba(255,184,32,.15);border-color:rgba(255,184,32,.5);color:var(--warn)}
 .btn-star:hover{border-color:var(--warn);color:var(--warn);transform:scale(1.1)}
-.btn-del{background:none;border:none;font-size:11px;color:var(--mut);opacity:.35;transition:opacity .15s;line-height:1;padding:2px}
+.btn-del{background:none;border:none;font-size:10px;color:var(--mut);opacity:.3;transition:opacity .15s;line-height:1;padding:2px;width:26px;text-align:center}
 .btn-del:hover{opacity:1;color:var(--bear)}
 
 /* loading row */
@@ -262,7 +277,8 @@ button{cursor:pointer;font-family:var(--mono)}
       <input class="add-inp" id="addInp" type="text"
         placeholder="Ticker o nome azienda  (es. NVDA, Nvidia, ASML…)"
         autocorrect="off" autocapitalize="none" spellcheck="false" autocomplete="off">
-      <button class="btn-add" id="btnAdd" onclick="addTicker()">+ ADD</button>
+      <button class="btn-add" id="btnAdd" onclick="addTicker(false)">+ ADD</button>
+      <button class="btn-fav-add" id="btnFavAdd" onclick="addTicker(true)" title="Aggiungi ai preferiti">☆</button>
     </div>
   </div>
 
@@ -490,11 +506,12 @@ const VB={g:'badge-g',l:'badge-l',w:'badge-w',b:'badge-b'};
 const RC={g:'var(--bull)',l:'var(--blue)',w:'var(--warn)',b:'var(--bear)'};
 
 // ── ADD TICKER ──
-async function addTicker(){
+async function addTicker(asFav=false){
   const raw = document.getElementById('addInp').value.trim();
   if(!raw) return;
   const btn = document.getElementById('btnAdd');
-  btn.disabled = true;
+  const btnF = document.getElementById('btnFavAdd');
+  btn.disabled = true; btnF.disabled = true;
   document.getElementById('addInp').value = '';
 
   // resolve: try as-is first, then by name
@@ -515,24 +532,24 @@ async function addTicker(){
       ticker = resolved;
       document.querySelector(`#${lid} span`).textContent = `Caricamento ${ticker}…`;
       try{ data = await fetchYahoo(ticker); }
-      catch(e2){ document.getElementById(lid)?.remove(); showToast('❌ '+e2.message,3200); btn.disabled=false; if(!watchlist.length) renderList(); return; }
+      catch(e2){ document.getElementById(lid)?.remove(); showToast('❌ '+e2.message,3200); btn.disabled=false; btnF.disabled=false; if(!watchlist.length) renderList(); return; }
     } else {
-      document.getElementById(lid)?.remove(); showToast('❌ Non trovato. Prova il ticker diretto.',3000); btn.disabled=false; if(!watchlist.length) renderList(); return;
+      document.getElementById(lid)?.remove(); showToast('❌ Non trovato. Prova il ticker diretto.',3000); btn.disabled=false; btnF.disabled=false; if(!watchlist.length) renderList(); return;
     }
   }
 
   if(watchlist.find(w=>w.ticker===ticker)){
-    document.getElementById(lid)?.remove(); showToast('⚠ '+ticker+' già in watchlist'); btn.disabled=false; renderList(); return;
+    document.getElementById(lid)?.remove(); showToast('⚠ '+ticker+' già in watchlist'); btn.disabled=false; btnF.disabled=false; renderList(); return;
   }
 
   const sc = computeScore(data.highs,data.lows,data.closes,data.volumes);
   scores[ticker] = sc;
-  watchlist.push({ticker, name:data.name, fav:false, ts:Date.now()});
+  watchlist.push({ticker, name:data.name, fav:!!asFav, ts:Date.now()});
   document.getElementById(lid)?.remove();
   await save();
   renderList();
-  showToast('✓ '+ticker+' aggiunto');
-  btn.disabled = false;
+  showToast(asFav ? '★ '+ticker+' aggiunto ai preferiti' : '✓ '+ticker+' aggiunto');
+  btn.disabled = false; btnF.disabled = false;
 }
 
 // ── RENDER LIST ──
@@ -553,7 +570,7 @@ function renderList(){
     sorted.forEach(w=>{
       const sc=scores[w.ticker]; if(!sc) return;
       const ring=document.getElementById('mr_'+w.ticker);
-      if(ring){ ring.style.strokeDashoffset=113*(1-sc.total/100); ring.style.stroke=RC[sc.vc]; }
+      if(ring){ ring.style.strokeDashoffset=88*(1-sc.total/100); ring.style.stroke=RC[sc.vc]; }
       document.querySelectorAll(`[data-tkb="${w.ticker}"]`).forEach(f=>{ f.style.width=f.dataset.w+'%'; });
     });
   });
@@ -561,46 +578,49 @@ function renderList(){
 function rowHtml(w){
   const sc=scores[w.ticker];
   const rowC=sc?VC[sc.vc]:'';
-  const bHtml=sc?`<span class="tr-badge ${VB[sc.vc]}">${sc.verdict}</span>`:`<span class="tr-badge" style="background:var(--s3);color:var(--mut)">—</span>`;
   const stP=sc?sc.st/25*100:0,mtP=sc?sc.mt/35*100:0,ltP=sc?sc.lt/40*100:0;
 
-  // extra meta pills
-  let metaHtml='';
+  // ring offset: dasharray=88 for r=14
+  const ringOff=sc?(88*(1-sc.total/100)):88;
+  const ringCol=sc?RC[sc.vc]:'var(--mut)';
+
+  let line1='', line2='';
   if(sc){
-    const priceStr=fmt(sc.px);
     const adxC=sc.adx>=40?'g':sc.adx>=25?'l':'w';
-    const adxStr=`ADX ${fmt(sc.adx,0)}`;
     const stopC=sc.tsHit?'b':sc.tsBuf<1.5?'w':'g';
     const stopStr=sc.tsHit?'Stop ⚠':sc.tsBuf<1.5?'Stop ~':'Stop ✓';
-    const sigC=sc.vc;
-    const sigStr=sc.signal;
-    metaHtml=`<div class="tr-meta">
-      <span class="tr-price">${priceStr}</span>
-      <span class="tr-pill ${adxC}">${adxStr}</span>
+    line1=`
+      <span class="tr-tk">${w.ticker}</span>
+      <span class="tr-price">${fmt(sc.px)}</span>
+      <span class="tr-badge ${VB[sc.vc]}">${sc.verdict}</span>`;
+    line2=`
+      <span class="tr-name">${w.name||'—'}</span>
+      <span class="tr-sep">·</span>
+      <span class="tr-pill ${adxC}">ADX ${fmt(sc.adx,0)}</span>
       <span class="tr-pill ${stopC}">${stopStr}</span>
-      <span class="tr-pill ${sigC}">${sigStr}</span>
-    </div>`;
+      <span class="tr-pill ${sc.vc}">${sc.signal}</span>`;
+  } else {
+    line1=`<span class="tr-tk">${w.ticker}</span>`;
+    line2=`<span class="tr-name">${w.name||'—'}</span>`;
   }
 
   return `<div class="ticker-row ${rowC} ${w.fav?'fav':''}" onclick="openDetail('${w.ticker}')">
   <div class="mini-ring">
-    <svg viewBox="0 0 46 46"><circle class="mr-bg" cx="23" cy="23" r="18"/><circle class="mr-fg" id="mr_${w.ticker}" cx="23" cy="23" r="18"/></svg>
+    <svg viewBox="0 0 36 36"><circle class="mr-bg" cx="18" cy="18" r="14"/><circle class="mr-fg" id="mr_${w.ticker}" cx="18" cy="18" r="14" stroke="${ringCol}" stroke-dashoffset="${ringOff}"/></svg>
     <div class="mr-num">${sc?sc.total:'-'}</div>
   </div>
   <div class="tr-info">
-    <div class="tr-tk">${w.ticker}</div>
-    <div class="tr-name">${w.name||'—'}</div>
-    ${bHtml}
-    ${metaHtml}
+    <div class="tr-line1">${line1}</div>
+    <div class="tr-line2">${line2}</div>
   </div>
-  <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0">
+  <div class="tr-right">
     <div class="tr-tf">
       <div class="tf-pip"><span class="pip-lbl">S</span><div class="pip-bar"><div class="pip-fill" data-tkb="${w.ticker}" data-w="${stP.toFixed(0)}" style="background:${clr(stP/100)};width:0%"></div></div></div>
       <div class="tf-pip"><span class="pip-lbl">M</span><div class="pip-bar"><div class="pip-fill" data-tkb="${w.ticker}" data-w="${mtP.toFixed(0)}" style="background:${clr(mtP/100)};width:0%"></div></div></div>
       <div class="tf-pip"><span class="pip-lbl">L</span><div class="pip-bar"><div class="pip-fill" data-tkb="${w.ticker}" data-w="${ltP.toFixed(0)}" style="background:${clr(ltP/100)};width:0%"></div></div></div>
     </div>
     <div class="tr-actions" onclick="event.stopPropagation()">
-      <button class="btn-star ${w.fav?'on':''}" onclick="toggleFav('${w.ticker}')" title="${w.fav?'Rimuovi dai preferiti':'Aggiungi ai preferiti'}">${w.fav?'★':'☆'}</button>
+      <button class="btn-star ${w.fav?'on':''}" onclick="toggleFav('${w.ticker}')" title="${w.fav?'Rimuovi preferito':'Aggiungi preferito'}">${w.fav?'★':'☆'}</button>
       <button class="btn-del" onclick="removeTicker('${w.ticker}')" title="Rimuovi">✕</button>
     </div>
   </div>
@@ -754,7 +774,7 @@ let _tt;
 function showToast(msg,dur=2000){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),dur); }
 
 // ── INIT ──
-document.getElementById('addInp').addEventListener('keydown',e=>{ if(e.key==='Enter') addTicker(); });
+document.getElementById('addInp').addEventListener('keydown',e=>{ if(e.key==='Enter') addTicker(false); });
 (async()=>{ await loadData(); renderList(); if(sbOk()) dot('ok'); })();
 </script>
 </body>
