@@ -64,6 +64,38 @@ button{cursor:pointer;font-family:var(--mono)}
 .btn-fav-add:active{transform:scale(.95)}
 .btn-fav-add:disabled{opacity:.35;cursor:not-allowed}
 
+/* FAV CHIPS */
+.fav-section{max-width:760px;margin:0 auto;padding:0 12px 4px;display:none}
+.fav-section.on{display:block}
+.fav-label{font-size:9px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;margin-bottom:7px}
+.fav-chips{display:flex;flex-wrap:wrap;gap:6px}
+.fav-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,184,32,.08);border:1px solid rgba(255,184,32,.28);
+  border-radius:20px;padding:4px 5px 4px 10px;
+  cursor:pointer;transition:all .15s
+}
+.fav-chip:hover{background:rgba(255,184,32,.16);border-color:rgba(255,184,32,.5)}
+.fav-chip-tk{font-family:var(--disp);font-size:10px;font-weight:700;color:var(--warn);letter-spacing:.02em}
+.fav-chip-score{font-size:9px;color:var(--mut);margin-left:1px}
+.fav-chip-x{
+  background:rgba(255,255,255,.07);border:none;border-radius:50%;
+  width:16px;height:16px;display:flex;align-items:center;justify-content:center;
+  font-size:9px;color:var(--mut);transition:all .12s;line-height:1;flex-shrink:0
+}
+.fav-chip-x:hover{background:rgba(255,63,90,.25);color:var(--bear)}
+
+/* SORT BAR */
+.sort-bar{max-width:760px;margin:0 auto;padding:8px 12px 10px;display:flex;align-items:center;gap:6px}
+.sort-lbl{font-size:9px;color:var(--mut);letter-spacing:.1em;text-transform:uppercase;margin-right:4px}
+.sort-btn{
+  background:var(--s2);border:1px solid var(--bd);border-radius:6px;
+  padding:4px 11px;font-size:10px;color:var(--mut);
+  transition:all .15s;letter-spacing:.04em
+}
+.sort-btn.act{background:rgba(56,160,255,.1);border-color:rgba(56,160,255,.35);color:var(--blue)}
+.sort-btn:hover:not(.act){border-color:var(--txt);color:var(--txt)}
+
 .sec-lbl{font-size:9px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;padding:0 16px;margin-bottom:8px;max-width:620px;margin-left:auto;margin-right:auto}
 
 /* TICKER LIST */
@@ -282,6 +314,19 @@ button{cursor:pointer;font-family:var(--mono)}
     </div>
   </div>
 
+  <!-- FAV CHIPS -->
+  <div class="fav-section" id="favSection">
+    <div class="fav-label">★ Preferiti</div>
+    <div class="fav-chips" id="favChips"></div>
+  </div>
+
+  <!-- SORT BAR -->
+  <div class="sort-bar">
+    <span class="sort-lbl">Ordina</span>
+    <button class="sort-btn act" id="sortScore" onclick="setSort('score')">Score ↓</button>
+    <button class="sort-btn" id="sortAlpha" onclick="setSort('alpha')">A→Z</button>
+  </div>
+
   <div class="sec-lbl" id="listLabel">— watchlist —</div>
   <div class="ticker-list" id="tickerList">
     <div class="empty">
@@ -338,6 +383,7 @@ const SB_ROW= 'trendiq_wl';
 let watchlist = [];   // [{ticker, name, fav}]
 let scores    = {};   // {TICKER: scoreObj}
 let currentTk = null;
+let sortMode  = 'score'; // 'score' | 'alpha'
 
 // ── SUPABASE ──
 const sbUrl  = () => localStorage.getItem(K_URL) || '';
@@ -552,8 +598,39 @@ async function addTicker(asFav=false){
   btn.disabled = false; btnF.disabled = false;
 }
 
+// ── RENDER FAV CHIPS ──
+function renderFavChips(){
+  const favs = watchlist.filter(w=>w.fav);
+  const sec  = document.getElementById('favSection');
+  const box  = document.getElementById('favChips');
+  if(!favs.length){ sec.classList.remove('on'); return; }
+  sec.classList.add('on');
+  box.innerHTML = favs.map(w=>{
+    const sc = scores[w.ticker];
+    const scoreTag = sc ? `<span class="fav-chip-score">${sc.total}</span>` : '';
+    return `<div class="fav-chip" onclick="openDetail('${w.ticker}')">
+      <span class="fav-chip-tk">${w.ticker}</span>${scoreTag}
+      <button class="fav-chip-x" onclick="event.stopPropagation();unfav('${w.ticker}')" title="Rimuovi dai preferiti">✕</button>
+    </div>`;
+  }).join('');
+}
+
+async function unfav(ticker){
+  const w = watchlist.find(x=>x.ticker===ticker);
+  if(w){ w.fav=false; await save(); renderFavChips(); renderList(); }
+}
+
+// ── SORT ──
+function setSort(mode){
+  sortMode = mode;
+  document.getElementById('sortScore').className = 'sort-btn'+(mode==='score'?' act':'');
+  document.getElementById('sortAlpha').className = 'sort-btn'+(mode==='alpha'?' act':'');
+  renderList();
+}
+
 // ── RENDER LIST ──
 function renderList(){
+  renderFavChips();
   const el = document.getElementById('tickerList');
   if(!watchlist.length){
     el.innerHTML = `<div class="empty"><div class="empty-icon">📡</div><div class="empty-t">Nessun ticker in watchlist.<br>Inserisci un ticker o il nome dell'azienda e premi ADD.</div></div>`;
@@ -562,6 +639,8 @@ function renderList(){
   }
   document.getElementById('listLabel').textContent = `— ${watchlist.length} ticker —`;
   const sorted = [...watchlist].sort((a,b)=>{
+    if(sortMode==='alpha') return a.ticker.localeCompare(b.ticker);
+    // score: favs first, then by score desc
     if(a.fav!==b.fav) return a.fav?-1:1;
     return (scores[b.ticker]?.total??-1) - (scores[a.ticker]?.total??-1);
   });
