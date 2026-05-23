@@ -173,6 +173,9 @@ button{cursor:pointer;font-family:var(--mono)}
 .btn-star:hover{border-color:var(--warn);color:var(--warn);transform:scale(1.1)}
 .btn-del{background:none;border:none;font-size:10px;color:var(--mut);opacity:.3;transition:opacity .15s;line-height:1;padding:2px;width:26px;text-align:center}
 .btn-del:hover{opacity:1;color:var(--bear)}
+.btn-snap-row{background:none;border:none;font-size:13px;opacity:.3;transition:all .15s;line-height:1;padding:2px;width:26px;text-align:center}
+.btn-snap-row:hover{opacity:1;transform:scale(1.2)}
+.btn-snap-row.flash{opacity:1;transform:scale(1.3)}
 
 /* loading row */
 .row-loading{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:15px 16px;margin-bottom:8px;display:flex;align-items:center;gap:10px;color:var(--mut);font-size:11px}
@@ -893,6 +896,7 @@ function rowHtml(w){
     </div>
     <div class="tr-actions" onclick="event.stopPropagation()">
       <button class="btn-star ${w.fav?'on':''}" onclick="toggleFav('${w.ticker}')" title="${w.fav?'Rimuovi preferito':'Aggiungi preferito'}">${w.fav?'★':'☆'}</button>
+      <button class="btn-snap-row" onclick="saveSnapshotFor('${w.ticker}')" title="Salva snapshot storico">📍</button>
       <button class="btn-del" onclick="removeTicker('${w.ticker}')" title="Rimuovi">✕</button>
     </div>
   </div>
@@ -1039,12 +1043,10 @@ function goHome(){
 }
 
 // ── SNAPSHOT ──
-function saveSnapshot(){
-  if(!currentTk) return;
-  const sc = scores[currentTk];
-  if(!sc){ showToast('⚠ Nessun dato da salvare'); return; }
-  const w = watchlist.find(x=>x.ticker===currentTk);
-  if(!history[currentTk]) history[currentTk]=[];
+function saveSnapshotFor(ticker){
+  const sc = scores[ticker];
+  if(!sc){ showToast('⚠ Aggiorna prima '+ticker); return; }
+  if(!history[ticker]) history[ticker]=[];
   const snap = {
     score:   sc.total,
     verdict: sc.verdict,
@@ -1052,16 +1054,19 @@ function saveSnapshot(){
     px:      sc.px,
     date:    new Date().toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'2-digit'})
   };
-  history[currentTk].unshift(snap);
-  if(history[currentTk].length > MAX_HIST) history[currentTk] = history[currentTk].slice(0, MAX_HIST);
+  history[ticker].unshift(snap);
+  if(history[ticker].length > MAX_HIST) history[ticker] = history[ticker].slice(0, MAX_HIST);
   saveLocal();
   if(sbOk()) sbSet(SB_HIST, JSON.stringify(history));
-  // animate button
-  const b = document.getElementById('btnSnap');
-  b.style.borderColor='var(--blue)'; b.style.color='var(--blue)';
-  b.style.transform='scale(1.2)';
-  setTimeout(()=>{ b.style.transform='scale(1)'; b.style.borderColor=''; b.style.color=''; },500);
-  showToast(`📍 Snapshot ${currentTk} salvato (${snap.score}/100)`);
+  // flash the button
+  const btns = document.querySelectorAll('.btn-snap-row');
+  btns.forEach(b=>{ if(b.closest('.ticker-row')?.querySelector('.tr-tk')?.textContent===ticker){ b.classList.add('flash'); setTimeout(()=>b.classList.remove('flash'),400); } });
+  showToast(`📍 ${ticker} · ${snap.score}/100 salvato`);
+}
+
+function saveSnapshot(){
+  if(!currentTk) return;
+  saveSnapshotFor(currentTk);
 }
 
 // ── HISTORY RENDER ──
