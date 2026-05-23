@@ -194,8 +194,13 @@ button{cursor:pointer;font-family:var(--mono)}
 .btn-back:hover{border-color:var(--bull);color:var(--bull)}
 .det-htk{font-family:var(--disp);font-size:17px;font-weight:900;color:#fff}
 .det-hname{font-size:10px;color:var(--mut);margin-top:1px;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.btn-snap{background:none;border:none;font-size:19px;opacity:.45;transition:all .2s;flex-shrink:0}
-.btn-snap:hover{opacity:1;transform:scale(1.15)}
+.btn-snap{
+  background:var(--s2);border:1px solid var(--bd);border-radius:8px;
+  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  font-size:15px;color:var(--mut);transition:all .2s;flex-shrink:0
+}
+.btn-snap:hover{border-color:var(--blue);color:var(--blue);transform:scale(1.08)}
+.btn-snap:active{transform:scale(.92)}
 .btn-det-star{background:none;border:none;font-size:21px;opacity:.3;transition:all .2s;flex-shrink:0}
 .btn-det-star.on{opacity:1}
 
@@ -432,7 +437,7 @@ button{cursor:pointer;font-family:var(--mono)}
       <div class="det-htk" id="detTk">—</div>
       <div class="det-hname" id="detName">—</div>
     </div>
-    <button class="btn-snap" id="btnSnap" onclick="saveSnapshot()" title="Salva snapshot storico">📍</button>
+    <button class="btn-snap" id="btnSnap" onclick="saveSnapshot()" title="Salva snapshot nello Storico">📍</button>
     <button class="btn-det-star" id="btnDetStar" onclick="toggleFavDet()">☆</button>
   </header>
   <div class="det-body" id="detBody"></div>
@@ -1053,8 +1058,9 @@ function saveSnapshot(){
   if(sbOk()) sbSet(SB_HIST, JSON.stringify(history));
   // animate button
   const b = document.getElementById('btnSnap');
-  b.style.opacity='1'; b.style.transform='scale(1.3)';
-  setTimeout(()=>{ b.style.transform='scale(1)'; b.style.opacity='.45'; },400);
+  b.style.borderColor='var(--blue)'; b.style.color='var(--blue)';
+  b.style.transform='scale(1.2)';
+  setTimeout(()=>{ b.style.transform='scale(1)'; b.style.borderColor=''; b.style.color=''; },500);
   showToast(`📍 Snapshot ${currentTk} salvato (${snap.score}/100)`);
 }
 
